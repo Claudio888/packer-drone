@@ -1,0 +1,28 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: validate
+  image: hashicorp/packer:1.7.2
+  environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: AWS_SECRET_ACCESS_KEY
+      AWS_DEFAULT_REGION:
+        from_secret: AWS_DEFAULT_REGION
+  commands:
+    - packer validate -syntax-only image.json
+
+- name: build
+  image: hashicorp/packer:1.7.2
+  environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: AWS_SECRET_ACCESS_KEY
+      AWS_DEFAULT_REGION:
+        from_secret: AWS_DEFAULT_REGION
+  commands:
+    - packer build image.json
